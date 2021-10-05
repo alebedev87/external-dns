@@ -61,7 +61,7 @@ The `resourceGroup` is the Resource Group created in a previous step.
 The `aadClientID` and `aaClientSecret` are associated with the Service Principal, that you need to create next.
 
 ### Creating service principal
-A Service Principal with a minimum access level of `DNS Zone Contributor` or `Contributor` to the DNS zone(s) and `Reader` to the resource group containing the Azure DNS zone(s) is necessary for ExternalDNS to be able to edit DNS records. However, other more permissive access levels will work too (e.g. `Contributor` to the resource group or the whole subscription). 
+A Service Principal with a minimum access level of `contributor` to the DNS zone(s) and `reader` to the resource group containing the Azure DNS zone(s) is necessary for ExternalDNS to be able to edit DNS records. However, other more permissive access levels will work too (e.g. `contributor` to the resource group or the whole subscription). 
 
 This is an Azure CLI example on how to query the Azure API for the information required for the Resource Group and DNS zone you would have already created in previous steps.
 
@@ -136,7 +136,7 @@ $ kubectl create secret generic azure-config-file --from-file=/local/path/to/azu
 
 ### Azure Managed Service Identity (MSI)
 
-If [Azure Managed Service Identity (MSI)](https://docs.microsoft.com/en-us/azure/active-directory/managed-service-identity/overview) is enabled for virtual machines, then there is no need to create separate service principal. Note that when granting access the kubeletidentity must be used, not the MSI used for the cluster (it usually has a name in the format <Clustername>-<agentpool>).
+If [Azure Managed Service Identity (MSI)](https://docs.microsoft.com/en-us/azure/active-directory/managed-service-identity/overview) is enabled for virtual machines, then there is no need to create separate service principal.
 
 The contents of `azure.json` should be similar to this:
 
@@ -191,7 +191,7 @@ spec:
     spec:
       containers:
       - name: external-dns
-        image: k8s.gcr.io/external-dns/external-dns:v0.8.0
+        image: k8s.gcr.io/external-dns/external-dns:v0.7.6
         args:
         - --source=service
         - --source=ingress
@@ -206,9 +206,6 @@ spec:
       - name: azure-config-file
         secret:
           secretName: azure-config-file
-          items:
-          - key: externaldns-config.json
-            path: azure.json
 ```
 
 ### Manifest (for clusters with RBAC enabled, cluster access)
@@ -218,7 +215,7 @@ kind: ServiceAccount
 metadata:
   name: external-dns
 ---
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
   name: external-dns
@@ -233,7 +230,7 @@ rules:
   resources: ["nodes"]
   verbs: ["list"]
 ---
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
   name: external-dns-viewer
@@ -264,7 +261,7 @@ spec:
       serviceAccountName: external-dns
       containers:
       - name: external-dns
-        image: k8s.gcr.io/external-dns/external-dns:v0.8.0
+        image: k8s.gcr.io/external-dns/external-dns:v0.7.6
         args:
         - --source=service
         - --source=ingress
@@ -279,9 +276,6 @@ spec:
       - name: azure-config-file
         secret:
           secretName: azure-config-file
-          items:
-          - key: externaldns-config.json
-            path: azure.json
 ```
 
 ### Manifest (for clusters with RBAC enabled, namespace access)
@@ -295,7 +289,7 @@ kind: ServiceAccount
 metadata:
   name: external-dns
 ---
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
   name: external-dns
@@ -307,7 +301,7 @@ rules:
   resources: ["ingresses"]
   verbs: ["get","watch","list"]
 ---
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
   name: external-dns
@@ -337,7 +331,7 @@ spec:
       serviceAccountName: external-dns
       containers:
       - name: external-dns
-        image: k8s.gcr.io/external-dns/external-dns:v0.8.0
+        image: k8s.gcr.io/external-dns/external-dns:v0.7.6
         args:
         - --source=service
         - --source=ingress
@@ -352,9 +346,6 @@ spec:
       - name: azure-config-file
         secret:
           secretName: azure-config-file
-          items:
-          - key: externaldns-config.json
-            path: azure.json
 ```
 
 Create the deployment for ExternalDNS:

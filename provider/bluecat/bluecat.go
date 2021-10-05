@@ -26,7 +26,6 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 
@@ -40,8 +39,8 @@ import (
 
 type bluecatConfig struct {
 	GatewayHost      string `json:"gatewayHost"`
-	GatewayUsername  string `json:"gatewayUsername,omitempty"`
-	GatewayPassword  string `json:"gatewayPassword,omitempty"`
+	GatewayUsername  string `json:"gatewayUsername"`
+	GatewayPassword  string `json:"gatewayPassword"`
 	DNSConfiguration string `json:"dnsConfiguration"`
 	View             string `json:"dnsView"`
 	RootZone         string `json:"rootZone"`
@@ -540,25 +539,9 @@ func (p *BluecatProvider) recordSet(ep *endpoint.Endpoint, getObject bool) (reco
 
 // getBluecatGatewayToken retrieves a Bluecat Gateway API token.
 func getBluecatGatewayToken(cfg bluecatConfig) (string, http.Cookie, error) {
-	var username string
-	if cfg.GatewayUsername != "" {
-		username = cfg.GatewayUsername
-	}
-	if v, ok := os.LookupEnv("BLUECAT_USERNAME"); ok {
-		username = v
-	}
-
-	var password string
-	if cfg.GatewayPassword != "" {
-		password = cfg.GatewayPassword
-	}
-	if v, ok := os.LookupEnv("BLUECAT_PASSWORD"); ok {
-		password = v
-	}
-
 	body, err := json.Marshal(map[string]string{
-		"username": username,
-		"password": password,
+		"username": cfg.GatewayUsername,
+		"password": cfg.GatewayPassword,
 	})
 	if err != nil {
 		return "", http.Cookie{}, errors.Wrap(err, "could not unmarshal credentials for bluecat gateway config")
