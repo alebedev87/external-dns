@@ -34,7 +34,7 @@ require (
 	github.com/infobloxopen/infoblox-go-client v1.1.1
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/linki/instrumented_http v0.3.0
-	github.com/linode/linodego v0.32.2
+	github.com/linode/linodego v1.2.1
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/maxatome/go-testdeep v1.10.1
 	github.com/miekg/dns v1.1.36-0.20210109083720-731b191cabd1
