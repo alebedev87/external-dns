@@ -175,8 +175,6 @@ github.com/go-gandi/go-gandi
 github.com/go-gandi/go-gandi/domain
 github.com/go-gandi/go-gandi/internal/client
 github.com/go-gandi/go-gandi/livedns
-# github.com/go-logr/logr v1.1.0
-## explicit
 # github.com/go-resty/resty/v2 v2.1.1-0.20191201195748-d7b97669fe48
 github.com/go-resty/resty/v2
 # github.com/gofrs/uuid v3.2.0+incompatible
@@ -201,7 +199,7 @@ github.com/golang/protobuf/ptypes/timestamp
 # github.com/golang/sync v0.0.0-20180314180146-1d60e4601c6f
 ## explicit
 github.com/golang/sync/errgroup
-# github.com/google/go-cmp v0.5.6
+# github.com/google/go-cmp v0.5.7
 ## explicit
 github.com/google/go-cmp/cmp
 github.com/google/go-cmp/cmp/internal/diff
@@ -310,7 +308,7 @@ github.com/json-iterator/go
 # github.com/linki/instrumented_http v0.3.0
 ## explicit
 github.com/linki/instrumented_http
-# github.com/linode/linodego v0.32.2
+# github.com/linode/linodego v1.3.0
 ## explicit
 github.com/linode/linodego
 github.com/linode/linodego/internal/duration
