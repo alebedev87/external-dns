@@ -247,6 +247,7 @@ type CreateInstanceRequest struct {
 	VolumeCapacity     int                    `json:"volume_capacity"`
 	VolumeIOPS         int                    `json:"volume_iops,omitempty"`
 	BackupEnabled      bool                   `json:"backup_enabled"`
+	BackupGatewayID    string                 `json:"backup_gateway_id,omitempty"`
 	IsEncrypted        bool                   `json:"is_encrypted"`
 	NetworkID          string                 `json:"network_id,omitempty"`
 	FloatingIPID       string                 `json:"floating_ip_id,omitempty"`
@@ -266,6 +267,7 @@ type PatchInstanceRequest struct {
 	VCPUCoresPerSocket int     `json:"vcpu_cores_per_socket,omitempty"`
 	RAMCapacity        int     `json:"ram_capacity,omitempty"`
 	VolumeGroupID      *string `json:"volume_group_id,omitempty"`
+	BackupGatewayID    string  `json:"backup_gateway_id,omitempty"`
 }
 
 // CreateFirewallPolicyRequest represents a request to create a firewall policy
@@ -403,30 +405,20 @@ type PatchHostRequest struct {
 
 type NetworkPolicyCatchallRuleAction string
 
+func (s NetworkPolicyCatchallRuleAction) String() string {
+	return string(s)
+}
+
 const (
 	NetworkPolicyCatchallRuleActionAllow  NetworkPolicyCatchallRuleAction = "ALLOW"
 	NetworkPolicyCatchallRuleActionDrop   NetworkPolicyCatchallRuleAction = "DROP"
 	NetworkPolicyCatchallRuleActionReject NetworkPolicyCatchallRuleAction = "REJECT"
 )
 
-var NetworkPolicyCatchallRuleActionEnum connection.EnumSlice = []connection.Enum{
+var NetworkPolicyCatchallRuleActionEnum connection.Enum[NetworkPolicyCatchallRuleAction] = []NetworkPolicyCatchallRuleAction{
 	NetworkPolicyCatchallRuleActionAllow,
 	NetworkPolicyCatchallRuleActionDrop,
 	NetworkPolicyCatchallRuleActionReject,
-}
-
-// ParseNetworkPolicyCatchallRuleAction attempts to parse a NetworkPolicyCatchallRuleAction from string
-func ParseNetworkPolicyCatchallRuleAction(s string) (NetworkPolicyCatchallRuleAction, error) {
-	e, err := connection.ParseEnum(s, NetworkPolicyCatchallRuleActionEnum)
-	if err != nil {
-		return "", err
-	}
-
-	return e.(NetworkPolicyCatchallRuleAction), err
-}
-
-func (s NetworkPolicyCatchallRuleAction) String() string {
-	return string(s)
 }
 
 // CreateNetworkPolicyRequest represents a request to create a network policy
@@ -639,4 +631,47 @@ type PatchNATOverloadRuleRequest struct {
 	Name   string                `json:"name,omitempty"`
 	Subnet string                `json:"subnet,omitempty"`
 	Action NATOverloadRuleAction `json:"action,omitempty"`
+}
+
+type ExecuteInstanceScriptRequest struct {
+	Script   string `json:"script"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+// CreateVPNGatewayRequest represents a request to create a VPN gateway
+type CreateVPNGatewayRequest struct {
+	Name            string `json:"name,omitempty"`
+	RouterID        string `json:"router_id"`
+	SpecificationID string `json:"specification_id"`
+}
+
+// PatchVPNGatewayRequest represents a request to patch a VPN gateway
+type PatchVPNGatewayRequest struct {
+	Name string `json:"name,omitempty"`
+}
+
+// CreateVPNGatewayUserRequest represents a request to create a VPN gateway user
+type CreateVPNGatewayUserRequest struct {
+	Name         string `json:"name,omitempty"`
+	VPNGatewayID string `json:"vpn_gateway_id"`
+	Username     string `json:"username"`
+	Password     string `json:"password"`
+}
+
+// PatchVPNGatewayUserRequest represents a request to patch a VPN gateway user
+type PatchVPNGatewayUserRequest struct {
+	Name     string `json:"name,omitempty"`
+	Password string `json:"password,omitempty"`
+}
+
+type CreateBackupGatewayRequest struct {
+	Name          string `json:"name,omitempty"`
+	VPCID         string `json:"vpc_id"`
+	RouterID      string `json:"router_id"`
+	GatewaySpecID string `json:"gateway_spec_id"`
+}
+
+type PatchBackupGatewayRequest struct {
+	Name string `json:"name"`
 }
